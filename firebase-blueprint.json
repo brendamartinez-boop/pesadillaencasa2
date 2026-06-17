@@ -1,0 +1,172 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role, points, and family affiliation.",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "child"] },
+        "points": { "type": "integer" },
+        "familyId": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["displayName", "photoURL", "role", "points", "familyId", "email", "createdAt"]
+    },
+    "Family": {
+      "title": "Family",
+      "description": "Household representation shared by members via code.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "admins": { "type": "array" },
+        "walkieTalkieBlockedAll": { "type": "boolean" },
+        "walkieTalkieBlockedUsers": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "code", "admins", "walkieTalkieBlockedAll", "walkieTalkieBlockedUsers", "createdAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Household task with difficulty point value and approval flow.",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string" },
+        "title": { "type": "string" },
+        "desc": { "type": "string" },
+        "pointsValue": { "type": "integer" },
+        "assignedTo": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed_by_child", "approved", "rejected"] },
+        "timeLimit": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["familyId", "title", "pointsValue", "assignedTo", "status", "createdAt", "updatedAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Real-time communication message inside the family.",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "senderPhoto": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["familyId", "senderId", "senderName", "senderPhoto", "message", "createdAt"]
+    },
+    "ShoppingItem": {
+      "title": "ShoppingItem",
+      "description": "Item in the family shopping list.",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string" },
+        "item": { "type": "string" },
+        "checked": { "type": "boolean" },
+        "addedBy": { "type": "string" },
+        "checkedBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["familyId", "item", "checked", "addedBy", "createdAt"]
+    },
+    "Reward": {
+      "title": "Reward",
+      "description": "Reward redeemable by children with tasks points.",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string" },
+        "title": { "type": "string" },
+        "cost": { "type": "integer" },
+        "status": { "type": "string", "enum": ["active", "proposal"] },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["familyId", "title", "cost", "status", "createdBy", "createdAt"]
+    },
+    "Redemption": {
+      "title": "Redemption",
+      "description": "Reward redemption instance requested by child and approved by admin.",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string" },
+        "rewardId": { "type": "string" },
+        "rewardTitle": { "type": "string" },
+        "cost": { "type": "integer" },
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "status": { "type": "string", "enum": ["requested", "approved", "rejected"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["familyId", "rewardId", "rewardTitle", "cost", "userId", "displayName", "status", "createdAt"]
+    },
+    "PointsHistory": {
+      "title": "PointsHistory",
+      "description": "Logs tracking points credit and debit.",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string" },
+        "userId": { "type": "string" },
+        "pointsChange": { "type": "integer" },
+        "reason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["familyId", "userId", "pointsChange", "reason", "createdAt"]
+    },
+    "WalkieTalkieState": {
+      "title": "WalkieTalkieState",
+      "description": "Voice walkie-talkie signal state representation.",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string" },
+        "activeSpeaker": { "type": "string" },
+        "activeSpeakerName": { "type": "string" },
+        "audioData": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["familyId", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Saves basic profile details and points of family members."
+    },
+    "/families/{familyId}": {
+      "schema": "Family",
+      "description": "Specifies information about the core household family."
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Saves pending, completed, or approved household chores."
+    },
+    "/chat_messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Stores individual chat messages for family communications."
+    },
+    "/shopping_items/{itemId}": {
+      "schema": "ShoppingItem",
+      "description": "Specifies items in the custom family shopping list."
+    },
+    "/rewards/{rewardId}": {
+      "schema": "Reward",
+      "description": "Lists the available and proposed reward objects."
+    },
+    "/redemptions/{redemptionId}": {
+      "schema": "Redemption",
+      "description": "Lists requested or approved status of reward redemptions."
+    },
+    "/points_history/{historyId}": {
+      "schema": "PointsHistory",
+      "description": "Audit trails for member scores."
+    },
+    "/walkie_talkie/{familyId}": {
+      "schema": "WalkieTalkieState",
+      "description": "Saves the single walkie-talkie signal broadcast state."
+    }
+  }
+}

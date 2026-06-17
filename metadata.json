@@ -1,0 +1,6 @@
+{
+  "name": "Pesadilla en Casa",
+  "description": "Organizador simple y divertido de tareas del hogar con ranking de puntos, chat familiar, lista de compras, recompensas y simulador de Walkie-Talkie.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
